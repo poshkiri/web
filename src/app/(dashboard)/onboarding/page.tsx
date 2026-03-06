@@ -104,7 +104,7 @@ export default function OnboardingPage() {
     const updates: { name: string; bio: string; website?: string; avatar_url?: string } = {
       name: values.displayName.trim(),
       bio: values.bio.trim(),
-      website: values.website?.trim() || null,
+      website: values.website?.trim() || undefined,
     }
 
     if (avatarFile && user?.id) {
