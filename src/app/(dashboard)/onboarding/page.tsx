@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -203,16 +204,22 @@ export default function OnboardingPage() {
                     className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-muted-foreground/30 bg-muted/50 hover:bg-muted"
                   >
                     {avatarPreview ? (
-                      <img
+                      <Image
                         src={avatarPreview}
                         alt=""
+                        width={80}
+                        height={80}
                         className="h-full w-full object-cover"
+                        unoptimized
                       />
                     ) : user.avatar_url ? (
-                      <img
+                      <Image
                         src={user.avatar_url}
                         alt=""
+                        width={80}
+                        height={80}
                         className="h-full w-full object-cover"
+                        unoptimized
                       />
                     ) : (
                       <User className="h-8 w-8 text-muted-foreground" />

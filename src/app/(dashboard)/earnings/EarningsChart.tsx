@@ -29,7 +29,7 @@ export function EarningsChart({ data }: { data: MonthData[] }) {
             tickFormatter={(v) => `$${v}`}
           />
           <Tooltip
-            formatter={(value: number) => [`$${value.toFixed(2)}`, "Net"]}
+            formatter={(value: number | undefined) => [`$${(value ?? 0).toFixed(2)}`, "Net"]}
             contentStyle={{ borderRadius: "8px" }}
           />
           <Bar dataKey="net" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />

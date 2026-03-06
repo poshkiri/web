@@ -126,7 +126,7 @@ export function StepBasicInfo({
   const watchedTitle = watch("title")
   const watchedDescription = watch("description")
   const watchedPrice = watch("price")
-  const watchedTags = watch("tags") ?? []
+  const watchedTags = useMemo(() => watch("tags") ?? [], [watch("tags")])
 
   const slugPreview = useMemo(() => {
     if (!watchedTitle) return ""

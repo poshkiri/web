@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { ShoppingCart } from "lucide-react";
@@ -51,6 +52,8 @@ function usePreviewUrls(files: File[]): string[] {
         return [];
       });
     };
+    // fileKey is a stable digest of files; using files would revoke URLs on every parent re-render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileKey]);
 
   return urls;
@@ -77,10 +80,12 @@ function CatalogCardPreview({
     <Card className="overflow-hidden rounded-xl border border-border/80 bg-card">
       <div className="relative aspect-video w-full overflow-hidden bg-muted">
         {previewMain ? (
-          <img
+          <Image
             src={previewMain}
             alt={title}
-            className="h-full w-full object-cover"
+            fill
+            className="object-cover"
+            unoptimized
           />
         ) : (
           <div className="flex h-full items-center justify-center bg-muted/50 text-muted-foreground">
@@ -171,10 +176,12 @@ function AssetPagePreview({
           </h3>
           <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-border bg-muted">
             {mainImage ? (
-              <img
+              <Image
                 src={mainImage}
                 alt={title}
-                className="h-full w-full object-contain"
+                fill
+                className="object-contain"
+                unoptimized
               />
             ) : (
               <div className="flex h-full items-center justify-center text-muted-foreground">
@@ -196,10 +203,12 @@ function AssetPagePreview({
                       : "border-border hover:border-primary/60"
                   )}
                 >
-                  <img
+                  <Image
                     src={src}
                     alt=""
-                    className="h-full w-full object-cover"
+                    fill
+                    className="object-cover"
+                    unoptimized
                   />
                 </button>
               ))}

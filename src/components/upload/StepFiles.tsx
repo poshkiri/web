@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useMemo, useState } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -249,10 +250,12 @@ export function StepFiles({ defaultValues, onBack, onSubmit }: StepFilesProps) {
                   }}
                 >
                   <div className="relative aspect-video overflow-hidden bg-muted">
-                    <img
+                    <Image
                       src={URL.createObjectURL(file)}
                       alt={file.name}
-                      className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                      fill
+                      className="object-cover transition-transform group-hover:scale-105"
+                      unoptimized
                     />
                     {isMain && (
                       <span className="absolute left-2 top-2 rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-primary-foreground shadow">
