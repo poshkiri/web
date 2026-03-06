@@ -122,7 +122,7 @@ export async function getTopSellers(): Promise<TopSeller[]> {
     byAuthor.set(id, cur);
   }
 
-  const sorted = [...byAuthor.entries()]
+  const sorted = Array.from(byAuthor.entries())
     .map(([authorId, agg]) => ({
       authorId,
       asset_count: agg.count,
