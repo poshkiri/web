@@ -55,17 +55,7 @@ export const basicInfoSchema = z.object({
     })
     .min(0, "Price cannot be negative")
     .max(9999, "Price is too high"),
-  tags: z
-    .array(
-      z
-        .string()
-        .trim()
-        .min(1, "Tag cannot be empty")
-        .max(40, "Tag is too long")
-    )
-    .max(10, "You can add up to 10 tags")
-    .optional()
-    .default([]),
+  tags: z.array(z.string()).default([]),
 })
 
 export type BasicInfoFormValues = z.infer<typeof basicInfoSchema>
