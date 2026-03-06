@@ -1,13 +1,26 @@
 import Stripe from "stripe";
 
-const secretKey = process.env.STRIPE_SECRET_KEY;
-if (!secretKey) {
-  throw new Error("STRIPE_SECRET_KEY is not set");
+let stripeInstance: Stripe | null = null;
+
+function getStripe(): Stripe {
+  if (!stripeInstance) {
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    if (!secretKey) {
+      throw new Error("STRIPE_SECRET_KEY is not set");
+    }
+    stripeInstance = new Stripe(secretKey, {
+      apiVersion: "2025-02-24.acacia",
+      typescript: true,
+    });
+  }
+  return stripeInstance;
 }
 
-export const stripe = new Stripe(secretKey, {
-  apiVersion: "2025-02-24.acacia",
-  typescript: true,
+/** Lazy-initialized Stripe client (avoids build-time error when env is not set). Use getStripe() or stripe in API routes. */
+export const stripe = new Proxy({} as Stripe, {
+  get(_, prop) {
+    return getStripe()[prop as keyof Stripe];
+  },
 });
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
