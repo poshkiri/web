@@ -261,7 +261,7 @@ export function AdminAssetsTable({
             <Button variant="outline" onClick={() => setRejectAssetId(null)}>
               Cancel
             </Button>
-            <Button variant="destructive" disabled={loading} onClick={handleRejectSubmit}>
+            <Button variant="destructive" disabled={!!loadingId} onClick={handleRejectSubmit}>
               Reject
             </Button>
           </DialogFooter>
