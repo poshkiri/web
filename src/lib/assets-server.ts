@@ -329,7 +329,7 @@ export async function getPurchasesForUser(
       ...assetFields,
       author: null,
       category: category ?? null,
-    } as AssetWithCategory;
+    } as unknown as AssetWithCategory;
 
     if (search.trim()) {
       const term = search.trim().toLowerCase();
