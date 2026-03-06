@@ -12,7 +12,7 @@ import { AssetRowActions } from "./AssetRowActions";
 export const dynamic = "force-dynamic";
 
 type AssetRow = Asset & {
-  category?: { name: string } | null;
+  category?: { name: string }[] | null;
   sales_count?: number;
   revenue_cents?: number;
 };
@@ -50,7 +50,7 @@ async function getMyAssets(userId: string) {
     .eq("author_id", userId)
     .order("created_at", { ascending: false });
 
-  return (data ?? []) as AssetRow[];
+  return (data ?? []) as unknown as AssetRow[];
 }
 
 async function getSalesByAsset(assetIds: string[]) {
@@ -243,7 +243,7 @@ export default async function MyAssetsPage({
                       </div>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">
-                      {row.category?.name ?? "—"} · {row.engine}
+                      {row.category?.[0]?.name ?? "—"} · {row.engine}
                     </td>
                     <td className="px-4 py-3">${row.price}</td>
                     <td className="px-4 py-3">
