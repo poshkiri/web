@@ -28,7 +28,7 @@ export function AssetApproved({
   return (
     <Html>
       <Head />
-      <Preview>Your asset "{assetTitle}" is now live</Preview>
+      <Preview>Your asset &quot;{assetTitle}&quot; is now live</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>Asset approved</Heading>

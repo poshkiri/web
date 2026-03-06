@@ -30,7 +30,7 @@ export function AssetRejected({
   return (
     <Html>
       <Head />
-      <Preview>Your asset "{assetTitle}" needs changes</Preview>
+      <Preview>Your asset &quot;{assetTitle}&quot; needs changes</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>Asset not approved</Heading>
