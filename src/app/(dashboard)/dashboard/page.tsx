@@ -11,7 +11,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Purchase } from "@/types";
 import {
   ShoppingBag,
   Store,
@@ -44,10 +43,14 @@ function DashboardSkeleton() {
   );
 }
 
-// --- Buyer: last 3 purchases ---
+// --- Buyer: last 3 purchases (query returns only selected fields; asset may be object or array) ---
 
-type PurchaseWithAsset = Purchase & {
-  asset?: { title: string; slug: string; price: number } | null;
+type BuyerPurchaseRow = {
+  id: string;
+  asset_id: string;
+  amount: number;
+  created_at: string;
+  asset: { title: string; slug: string; price: number } | { title: string; slug: string; price: number }[] | null;
 };
 
 async function BuyerRecentPurchases({ userId }: { userId: string }) {
@@ -59,7 +62,7 @@ async function BuyerRecentPurchases({ userId }: { userId: string }) {
     .order("created_at", { ascending: false })
     .limit(3);
 
-  const purchases = (data ?? []) as PurchaseWithAsset[];
+  const purchases = (data ?? []) as BuyerPurchaseRow[];
 
   if (purchases.length === 0) {
     return (
@@ -71,19 +74,22 @@ async function BuyerRecentPurchases({ userId }: { userId: string }) {
 
   return (
     <ul className="space-y-3">
-      {purchases.map((p) => (
-        <li key={p.id}>
-          <Link
-            href={`/assets/${p.asset?.slug ?? p.asset_id}`}
-            className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
-          >
-            <span className="font-medium">{p.asset?.title ?? "Asset"}</span>
-            <span className="text-muted-foreground">
-              ${(p.amount / 100).toFixed(2)}
-            </span>
-          </Link>
-        </li>
-      ))}
+      {purchases.map((p) => {
+        const asset = Array.isArray(p.asset) ? p.asset[0] ?? null : p.asset;
+        return (
+          <li key={p.id}>
+            <Link
+              href={`/assets/${asset?.slug ?? p.asset_id}`}
+              className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
+            >
+              <span className="font-medium">{asset?.title ?? "Asset"}</span>
+              <span className="text-muted-foreground">
+                ${(p.amount / 100).toFixed(2)}
+              </span>
+            </Link>
+          </li>
+        );
+      })}
     </ul>
   );
 }
