@@ -53,7 +53,7 @@ async function getEarningsData(sellerId: string) {
 
   const earnings = (earningsRows ?? []) as EarningRow[];
 
-  const assetIds = [...new Set(earnings.map((e) => e.asset_id))];
+  const assetIds = Array.from(new Set(earnings.map((e) => e.asset_id)));
   const { data: purchaseRows } = await supabase
     .from("purchases")
     .select("id, asset_id, amount, created_at, user:users(name, email)")
