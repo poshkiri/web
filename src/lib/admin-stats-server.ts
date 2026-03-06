@@ -173,7 +173,12 @@ export async function getTopSellers(): Promise<TopSeller[]> {
     .select("amount, asset:assets!asset_id(author_id)")
     .limit(5000);
 
-  const list = (purchases ?? []) as { amount: number; asset: { author_id: string } | null }[];
+  type PurchaseRow = { amount: number; asset: { author_id: string }[] | { author_id: string } | null };
+  const raw = (purchases ?? []) as PurchaseRow[];
+  const list = raw.map((p) => ({
+    amount: Number(p.amount),
+    asset: Array.isArray(p.asset) ? (p.asset[0] ?? null) : p.asset ?? null,
+  }));
   const byAuthor: Record<
     string,
     { revenue: number; count: number }
