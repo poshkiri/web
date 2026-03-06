@@ -94,13 +94,13 @@ async function BuyerRecentPurchases({ userId }: { userId: string }) {
   );
 }
 
-// --- Seller: stats + last 5 sales ---
+// --- Seller: stats + last 5 sales (Supabase returns asset as object or array) ---
 
 type SellerSaleRow = {
   id: string;
   amount: number;
   created_at: string;
-  asset: { title: string; slug: string } | null;
+  asset: { title: string; slug: string; author_id?: string } | { title: string; slug: string; author_id?: string }[] | null;
 };
 
 async function SellerStats({ userId }: { userId: string }) {
@@ -180,24 +180,27 @@ async function SellerStats({ userId }: { userId: string }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {purchases.slice(0, 5).map((p) => (
-                    <tr key={p.id} className="border-b last:border-0">
-                      <td className="py-2">
-                        <Link
-                          href={`/assets/${p.asset?.slug ?? ""}`}
-                          className="hover:underline"
-                        >
-                          {p.asset?.title ?? "—"}
-                        </Link>
-                      </td>
-                      <td className="py-2">
-                        ${(p.amount / 100).toFixed(2)}
-                      </td>
-                      <td className="py-2 text-muted-foreground">
-                        {new Date(p.created_at).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  ))}
+                  {purchases.slice(0, 5).map((p) => {
+                    const asset = Array.isArray(p.asset) ? p.asset[0] ?? null : p.asset;
+                    return (
+                      <tr key={p.id} className="border-b last:border-0">
+                        <td className="py-2">
+                          <Link
+                            href={`/assets/${asset?.slug ?? ""}`}
+                            className="hover:underline"
+                          >
+                            {asset?.title ?? "—"}
+                          </Link>
+                        </td>
+                        <td className="py-2">
+                          ${(p.amount / 100).toFixed(2)}
+                        </td>
+                        <td className="py-2 text-muted-foreground">
+                          {new Date(p.created_at).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
