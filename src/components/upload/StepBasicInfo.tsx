@@ -116,7 +116,7 @@ export function StepBasicInfo({
   const watchedTitle = watch("title")
   const watchedDescription = watch("description")
   const watchedPrice = watch("price")
-  const watchedTags = useMemo(() => watch("tags") ?? [], [watch("tags")])
+  const watchedTags = watch("tags") ?? []
 
   const slugPreview = useMemo(() => {
     if (!watchedTitle) return ""
@@ -159,8 +159,7 @@ export function StepBasicInfo({
         onValidChange(valid, currentValues)
       })
     })
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useMemo(() => subscription.unsubscribe, [subscription])
+    void subscription
   }
 
   return (
