@@ -15,7 +15,7 @@ async function getCategories() {
   const supabase = await createClient();
   const { data } = await supabase
     .from("categories")
-    .select("id, name, slug")
+    .select("id, name, slug, icon")
     .order("name");
   return data ?? [];
 }
