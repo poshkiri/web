@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { useForm, Controller } from "react-hook-form"
+import { useForm, Controller, type Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import ReactMarkdown from "react-markdown"
@@ -99,7 +99,7 @@ export function StepBasicInfo({
     setValue,
     trigger,
   } = useForm<BasicInfoFormValues>({
-    resolver: zodResolver(basicInfoSchema),
+    resolver: zodResolver(basicInfoSchema) as Resolver<BasicInfoFormValues>,
     mode: "onChange",
     defaultValues: {
       title: "",
@@ -116,7 +116,7 @@ export function StepBasicInfo({
   const watchedTitle = watch("title")
   const watchedDescription = watch("description")
   const watchedPrice = watch("price")
-  const watchedTags = watch("tags") ?? []
+  const watchedTags = useMemo(() => watch("tags") ?? [], [watch("tags")])
 
   const slugPreview = useMemo(() => {
     if (!watchedTitle) return ""
