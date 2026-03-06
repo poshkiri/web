@@ -29,7 +29,7 @@ function slugify(title: string): string {
   return title
     .toLowerCase()
     .trim()
-    .replace(/[^\p{L}\p{N}\s-]/gu, "")
+    .replace(/[^a-zA-Z0-9\s-]/g, "")
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "") || "asset";
