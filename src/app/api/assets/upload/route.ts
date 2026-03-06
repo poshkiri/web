@@ -62,7 +62,8 @@ function parseTags(formData: FormData): string[] {
 /** Collect all form entries for a key (e.g. preview_images[] or preview_images). */
 function getAllFiles(formData: FormData, key: string): File[] {
   const files: File[] = [];
-  for (const [k, v] of formData.entries()) {
+  const entries = Array.from(formData.entries());
+  for (const [k, v] of entries) {
     if (v instanceof File && (k === key || k === `${key}[]`)) {
       files.push(v);
     }
