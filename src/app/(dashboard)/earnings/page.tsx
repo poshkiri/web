@@ -17,7 +17,7 @@ type EarningRow = {
   platform_fee: number;
   status: "pending" | "paid";
   created_at: string;
-  asset: { title: string } | null;
+  asset: { title: string } | { title: string }[] | null;
 };
 
 type PurchaseRow = {
@@ -109,16 +109,19 @@ async function getEarningsData(sellerId: string) {
     return { month: label, net: Math.round(net * 100) / 100 };
   });
 
-  const tableRows: TransactionRow[] = earnings.map((e) => ({
-    id: e.id,
-    assetTitle: e.asset?.title ?? "—",
-    buyerName: buyerByEarning.get(e.id) ?? null,
-    gross: round(gross(e)),
-    platformFee: e.platform_fee,
-    net: e.amount,
-    date: e.created_at,
-    status: e.status,
-  }));
+  const tableRows: TransactionRow[] = earnings.map((e) => {
+    const asset = Array.isArray(e.asset) ? e.asset[0] ?? null : e.asset;
+    return {
+      id: e.id,
+      assetTitle: asset?.title ?? "—",
+      buyerName: buyerByEarning.get(e.id) ?? null,
+      gross: round(gross(e)),
+      platformFee: e.platform_fee,
+      net: e.amount,
+      date: e.created_at,
+      status: e.status,
+    };
+  });
 
   return {
     totalEarned,
