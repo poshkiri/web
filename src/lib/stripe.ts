@@ -204,6 +204,7 @@ export async function createConnectAccountLink(
 
     const link = await stripe.accountLinks.create({
       account: accountId,
+      type: "account_onboarding",
       refresh_url: `${appUrl}/onboarding`,
       return_url: `${appUrl}/api/onboarding/complete`,
     });
