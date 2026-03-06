@@ -25,7 +25,7 @@ type PurchaseRow = {
   asset_id: string;
   amount: number;
   created_at: string;
-  user: { name: string | null; email: string } | null;
+  user: { name: string | null; email: string }[];
 };
 
 function last6Months(): { year: number; month: number; label: string }[] {
@@ -85,9 +85,10 @@ async function getEarningsData(sellerId: string) {
     const match = candidates[0];
     if (match) {
       usedPurchaseIds.add(match.id);
+      const u = match.user?.[0];
       buyerByEarning.set(
         e.id,
-        match.user?.name?.trim() || match.user?.email || "—"
+        u?.name?.trim() || u?.email || "—"
       );
     }
   }
