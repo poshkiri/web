@@ -1,0 +1,39 @@
+/**
+ * Game Assets Marketplace — Design system theme
+ * CSS custom properties for glassmorphism, gradients, and dark UI.
+ */
+
+:root {
+  /* Backgrounds */
+  --color-bg: #0a0a0f;
+  --color-bg-card: rgba(255, 255, 255, 0.03);
+
+  /* Accent colors */
+  --color-purple: #6c47ff;
+  --color-cyan: #00d4ff;
+  --color-pink: #ff2d78;
+
+  /* Text */
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.08);
+}
+
+/* Hero background orbs animation (float + pulse) */
+@keyframes hero-orb {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(25px, -18px) scale(1.1);
+  }
+  50% {
+    transform: translate(-18px, 22px) scale(1.2);
+  }
+  75% {
+    transform: translate(15px, 12px) scale(1.08);
+  }
+}
