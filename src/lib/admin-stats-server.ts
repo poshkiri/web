@@ -163,7 +163,7 @@ export async function getRecentTransactions(): Promise<RecentTransaction[]> {
     created_at: r.created_at,
     buyer: r.buyer ?? null,
     asset: r.asset ?? null,
-  })) as RecentTransaction[];
+  })) as unknown as RecentTransaction[];
 }
 
 export async function getTopSellers(): Promise<TopSeller[]> {

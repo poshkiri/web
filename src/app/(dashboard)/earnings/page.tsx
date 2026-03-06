@@ -51,7 +51,7 @@ async function getEarningsData(sellerId: string) {
     .eq("seller_id", sellerId)
     .order("created_at", { ascending: false });
 
-  const earnings = (earningsRows ?? []) as EarningRow[];
+  const earnings = (earningsRows ?? []) as unknown as EarningRow[];
 
   const assetIds = Array.from(new Set(earnings.map((e) => e.asset_id)));
   const { data: purchaseRows } = await supabase
@@ -60,7 +60,7 @@ async function getEarningsData(sellerId: string) {
     .in("asset_id", assetIds)
     .order("created_at", { ascending: false });
 
-  const purchases = (purchaseRows ?? []) as PurchaseRow[];
+  const purchases = (purchaseRows ?? []) as unknown as PurchaseRow[];
 
   const gross = (e: EarningRow) => e.amount + e.platform_fee;
   const round = (x: number) => Math.round(x * 100) / 100;

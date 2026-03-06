@@ -128,6 +128,7 @@ export default function OnboardingPage() {
       updates.avatar_url = urlData.publicUrl
     }
 
+    if (!user?.id) return;
     const { error } = await supabase.from("users").update(updates).eq("id", user.id)
 
     if (error) {

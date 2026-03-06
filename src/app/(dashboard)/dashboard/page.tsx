@@ -62,7 +62,7 @@ async function BuyerRecentPurchases({ userId }: { userId: string }) {
     .order("created_at", { ascending: false })
     .limit(3);
 
-  const purchases = (data ?? []) as BuyerPurchaseRow[];
+  const purchases = (data ?? []) as unknown as BuyerPurchaseRow[];
 
   if (purchases.length === 0) {
     return (
@@ -119,7 +119,7 @@ async function SellerStats({ userId }: { userId: string }) {
   ]);
 
   const assets = assetsRes.data ?? [];
-  const purchases = (purchasesRes.data ?? []) as SellerSaleRow[];
+  const purchases = (purchasesRes.data ?? []) as unknown as SellerSaleRow[];
 
   const totalSales = purchases.length;
   const totalEarnings = purchases.reduce((sum, p) => sum + p.amount, 0);
