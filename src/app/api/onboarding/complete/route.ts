@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
  * Called when Stripe redirects back after Connect onboarding.
  * Sets user role to seller and redirects to dashboard with success param.
  */
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const supabase = await createClient();
