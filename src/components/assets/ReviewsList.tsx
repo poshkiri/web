@@ -17,7 +17,7 @@ export interface ReviewListItem extends ReviewWithUser {
     id: string;
     name: string | null;
     avatar_url: string | null;
-    email?: string;
+    email: string;
   };
 }
 
