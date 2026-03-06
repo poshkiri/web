@@ -60,14 +60,18 @@ export default async function AssetsPage({
         {/* Desktop: sticky filters sidebar */}
         <aside className="hidden lg:block">
           <div className="sticky top-4 self-start">
-            <FiltersPanel />
+            <Suspense fallback={<div className="h-64 animate-pulse rounded-md bg-muted" />}>
+              <FiltersPanel />
+            </Suspense>
           </div>
         </aside>
 
         {/* Mobile: filters sheet trigger (FiltersPanel renders it) */}
         <div className="lg:hidden">
           <div className="mb-4">
-            <FiltersPanel />
+            <Suspense fallback={<div className="h-12 animate-pulse rounded-md bg-muted" />}>
+              <FiltersPanel />
+            </Suspense>
           </div>
         </div>
 
