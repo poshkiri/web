@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Menu } from "lucide-react"
+import { useUser } from "@/hooks/useUser"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -20,6 +21,8 @@ const navItems = [
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { user } = useUser()
+  const sellHref = user ? "/dashboard/onboarding" : "/register"
 
   return (
     <header
@@ -64,7 +67,7 @@ export function Header() {
               <Link href="/login">Login</Link>
             </Button>
             <Button size="sm" asChild>
-              <Link href="/sell">Start Selling</Link>
+              <Link href={sellHref}>Start Selling</Link>
             </Button>
           </div>
 
@@ -110,7 +113,7 @@ export function Header() {
                   Login
                 </Link>
                 <Link
-                  href="/sell"
+                  href={sellHref}
                   onClick={() => setMobileOpen(false)}
                   className="rounded-md px-3 py-2.5 text-sm font-medium text-primary hover:bg-white/10"
                 >
