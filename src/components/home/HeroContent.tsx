@@ -7,9 +7,6 @@ import { GlowButton } from "@/components/ui/GlowButton"
 import { cn } from "@/lib/utils"
 
 const ROTATING_WORDS = ["Epic", "Premium", "Stunning"]
-const TYPE_DELAY_MS = 100
-const DELETE_DELAY_MS = 80
-const PAUSE_BETWEEN_WORDS_MS = 1500
 
 const container = {
   hidden: { opacity: 0 },
@@ -26,52 +23,19 @@ const item = {
 
 export function HeroContent({ className }: { className?: string }) {
   const router = useRouter()
-  const [wordIndex, setWordIndex] = useState(0)
-  const [displayText, setDisplayText] = useState("")
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [index, setIndex] = useState(0)
+  const [visible, setVisible] = useState(true)
 
   useEffect(() => {
-    const word = ROTATING_WORDS[wordIndex]
-
-    const run = () => {
-      if (isDeleting) {
-        if (displayText.length === 0) {
-          // Слово стёрто — пауза, потом следующее слово
-          const nextIndex = (wordIndex + 1) % ROTATING_WORDS.length
-          const timeoutId = setTimeout(() => {
-            setWordIndex(nextIndex)
-            setIsDeleting(false)
-          }, PAUSE_BETWEEN_WORDS_MS)
-          return timeoutId
-        }
-        // Стираем по букве
-        const timeoutId = setTimeout(() => {
-          setDisplayText(word.slice(0, displayText.length - 1))
-        }, DELETE_DELAY_MS)
-        return timeoutId
-      }
-
-      // Печатаем
-      if (displayText === word) {
-        // Слово напечатано — пауза, потом стирание
-        const timeoutId = setTimeout(() => {
-          setIsDeleting(true)
-        }, PAUSE_BETWEEN_WORDS_MS)
-        return timeoutId
-      }
-      // Добавляем букву
-      const timeoutId = setTimeout(() => {
-        setDisplayText(word.slice(0, displayText.length + 1))
-      }, TYPE_DELAY_MS)
-      return timeoutId
-    }
-
-    const timeoutId = run()
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId)
-    }
-  }, [wordIndex, displayText, isDeleting])
+    const timer = setInterval(() => {
+      setVisible(false)
+      setTimeout(() => {
+        setIndex((i) => (i + 1) % ROTATING_WORDS.length)
+        setVisible(true)
+      }, 300)
+    }, 2000)
+    return () => clearInterval(timer)
+  }, [])
 
   return (
     <motion.div
@@ -111,13 +75,12 @@ export function HeroContent({ className }: { className?: string }) {
       >
         Fuel Your Game With{" "}
         <span className="relative inline-block min-w-[140px] text-left sm:min-w-[180px]">
-          <span className="bg-gradient-to-r from-[var(--color-purple)] to-[var(--color-cyan)] bg-clip-text text-transparent">
-            {displayText}
-          </span>
           <span
-            className="ml-0.5 inline-block h-[1em] w-0.5 animate-pulse bg-[var(--color-cyan)] align-baseline"
-            aria-hidden
-          />
+            className="absolute left-0 top-0 bg-gradient-to-r from-[var(--color-purple)] to-[var(--color-cyan)] bg-clip-text text-transparent transition-opacity duration-300"
+            style={{ opacity: visible ? 1 : 0 }}
+          >
+            {ROTATING_WORDS[index]}
+          </span>
           {/* Invisible spacer so layout doesn't jump */}
           <span className="invisible" aria-hidden>
             {ROTATING_WORDS.reduce((a, b) => (a.length >= b.length ? a : b), "")}
