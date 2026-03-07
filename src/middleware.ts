@@ -1,53 +1,62 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
+import { createServerClient } from "@supabase/ssr"
+import { NextResponse, type NextRequest } from "next/server"
 
-/** Routes that require an authenticated user. */
-const protectedRoutes = ["/dashboard", "/admin"];
-
-/** Auth routes that should redirect to dashboard when already signed in. */
-const authRoutes = ["/login", "/signup"];
-
-/**
- * Checks if the pathname matches any of the given route prefixes.
- *
- * @param pathname - Current path (e.g. /dashboard/settings)
- * @param prefixes - Route prefixes to match (e.g. ['/dashboard', '/admin'])
- * @returns true if pathname starts with any prefix
- */
-function matchesRoute(pathname: string, prefixes: string[]): boolean {
-  return prefixes.some((prefix) =>
-    pathname === prefix || pathname.startsWith(`${prefix}/`)
-  );
-}
-
-/**
- * Next.js middleware: refreshes Supabase session, protects /dashboard and /admin,
- * and redirects authenticated users away from /login (and auth routes).
- */
 export async function middleware(request: NextRequest) {
-  const { response, user, role } = await updateSession(request);
-  const pathname = request.nextUrl.pathname;
+  let supabaseResponse = NextResponse.next({
+    request,
+  })
 
-  // Redirect to /login if unauthenticated — do not leave user on /dashboard (or /admin)
-  if (!user && matchesRoute(pathname, protectedRoutes)) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirectTo", pathname);
-    return NextResponse.redirect(loginUrl);
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          )
+          supabaseResponse = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          )
+        },
+      },
+    }
+  )
+
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { pathname } = request.nextUrl
+
+  // Защищённые роуты — только для авторизованных
+  const protectedPaths = ["/dashboard", "/admin"]
+  const isProtected = protectedPaths.some(p => pathname.startsWith(p))
+
+  // Auth роуты — только для неавторизованных  
+  const authPaths = ["/login", "/register", "/forgot-password"]
+  const isAuthPage = authPaths.some(p => pathname.startsWith(p))
+
+  if (!user && isProtected) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/login"
+    url.searchParams.set("redirectTo", pathname)
+    return NextResponse.redirect(url)
   }
 
-  if (matchesRoute(pathname, ["/admin"]) && user && role !== "admin") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  if (user && isAuthPage) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/dashboard"
+    return NextResponse.redirect(url)
   }
 
-  if (matchesRoute(pathname, authRoutes) && user) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
-  return response;
+  return supabaseResponse
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|api/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
-};
+}
