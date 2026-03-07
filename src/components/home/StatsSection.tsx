@@ -62,7 +62,7 @@ function AnimatedCounter({
 
 export function StatsSection() {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, threshold: 0.1 })
+  const isInView = useInView(ref, { once: true, amount: 0.1 })
 
   return (
     <section className="px-4 py-24" aria-labelledby="stats-heading">
