@@ -5,14 +5,7 @@ import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
-const ROTATING_WORDS = [
-  "Epic 3D Models",
-  "Pro Sound Packs",
-  "Stunning VFX",
-  "Clean UI Kits",
-]
-const ROTATE_INTERVAL_MS = 2000
-const FADE_DURATION_MS = 200
+const WORDS = ["Epic 3D Models", "Pro Sound Packs", "Stunning VFX", "Clean UI Kits"]
 
 const STAGGER_DELAY = 0.1
 const container = {
@@ -30,19 +23,18 @@ const item = {
 
 export function HeroContent({ className }: { className?: string }) {
   const router = useRouter()
-  const [wordIndex, setWordIndex] = useState(0)
-  const [wordVisible, setWordVisible] = useState(true)
+  const [index, setIndex] = useState(0)
+  const [visible, setVisible] = useState(true)
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setWordVisible(false)
-      const changeWord = () => {
-        setWordIndex((i) => (i + 1) % ROTATING_WORDS.length)
-        setWordVisible(true)
-      }
-      setTimeout(changeWord, FADE_DURATION_MS)
-    }, ROTATE_INTERVAL_MS)
-    return () => clearInterval(timer)
+    const interval = setInterval(() => {
+      setVisible(false)
+      setTimeout(() => {
+        setIndex(i => (i + 1) % WORDS.length)
+        setVisible(true)
+      }, 300)
+    }, 2200)
+    return () => clearInterval(interval)
   }, [])
 
   return (
@@ -120,15 +112,15 @@ export function HeroContent({ className }: { className?: string }) {
         Currently featuring:{" "}
         <span className="relative inline-block min-w-[200px] text-text-primary">
           <span
-            className="transition-opacity duration-200"
-            style={{ opacity: wordVisible ? 1 : 0 }}
+            style={{
+              opacity: visible ? 1 : 0,
+              transition: "opacity 0.3s ease",
+              background: "linear-gradient(90deg, #7857ff, #06d6ff)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
           >
-            {ROTATING_WORDS[wordIndex]}
-          </span>
-          <span className="invisible" aria-hidden>
-            {ROTATING_WORDS.reduce((a, b) =>
-              a.length >= b.length ? a : b
-            )}
+            {WORDS[index]}
           </span>
         </span>
       </motion.p>

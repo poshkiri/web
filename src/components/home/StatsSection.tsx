@@ -1,75 +1,72 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
-import { useInView } from "framer-motion"
+import { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
-const DURATION_MS = 2000
-
-const STATS: Array<{
-  value: number
-  label: string
-  prefix?: string
-  suffix?: string
-  decimals?: number
-}> = [
-  { value: 10247, label: "Assets" },
-  { value: 5891, label: "Developers" },
-  { value: 487, label: "Sellers" },
-  { value: 2.4, label: "Paid Out", prefix: "$", suffix: "M", decimals: 1 },
+const STATS = [
+  { value: 10247, display: "10K+", label: "Assets", icon: "🎮" },
+  { value: 5891, display: "5.8K+", label: "Developers", icon: "👾" },
+  { value: 487, display: "487+", label: "Sellers", icon: "🛠️" },
+  { value: 2400000, display: "$2.4M+", label: "Paid to Creators", icon: "💰" },
 ]
 
-function useCounter(target: number, isInView: boolean, decimals = 0) {
-  const [display, setDisplay] = useState(0)
-  const startRef = useRef<number | null>(null)
-  const rafRef = useRef<number>(0)
+function useCountUp(target: number, duration = 2000) {
+  const [count, setCount] = useState(0)
+  const [started, setStarted] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!isInView) return
-    startRef.current = performance.now()
-    setDisplay(0)
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setStarted(true)
+      },
+      { threshold: 0.3 }
+    )
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [])
 
-    const tick = (now: number) => {
-      const start = startRef.current ?? now
-      const elapsed = now - start
-      const t = Math.min(elapsed / DURATION_MS, 1)
-      const eased = 1 - Math.pow(1 - t, 3)
-      const current = target * eased
-      setDisplay(decimals > 0 ? Number(current.toFixed(decimals)) : Math.round(current))
-      if (t < 1) rafRef.current = requestAnimationFrame(tick)
-    }
-    rafRef.current = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(rafRef.current)
-  }, [isInView, target, decimals])
+  useEffect(() => {
+    if (!started) return
+    let start = 0
+    const step = target / (duration / 16)
+    const timer = setInterval(() => {
+      start += step
+      if (start >= target) {
+        setCount(target)
+        clearInterval(timer)
+      } else {
+        setCount(Math.floor(start))
+      }
+    }, 16)
+    return () => clearInterval(timer)
+  }, [started, target, duration])
 
-  return display
+  return { count, ref }
+}
+
+function formatCount(count: number, value: number): string {
+  if (value >= 1_000_000) {
+    return "$" + (count / 1_000_000).toFixed(1) + "M+"
+  }
+  return count.toLocaleString() + "+"
 }
 
 function StatBlock({
-  target,
-  label,
-  prefix = "",
-  suffix = "",
-  decimals = 0,
-  isInView,
+  stat,
   showDivider,
 }: {
-  target: number
-  label: string
-  prefix?: string
-  suffix?: string
-  decimals?: number
-  isInView: boolean
+  stat: (typeof STATS)[number]
   showDivider: boolean
 }) {
-  const display = useCounter(target, isInView, decimals)
-  const formatted =
-    decimals > 0
-      ? `${prefix}${display.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}${suffix}`
-      : `${prefix}${display.toLocaleString()}${suffix}`
+  const { count, ref } = useCountUp(stat.value)
+  const formatted = formatCount(count, stat.value)
 
   return (
-    <div className="flex flex-1 basis-full items-center justify-center py-4 sm:basis-0 sm:py-0">
+    <div
+      ref={ref}
+      className="flex flex-1 basis-full items-center justify-center py-4 sm:basis-0 sm:py-0"
+    >
       {showDivider && (
         <span
           className="mr-6 h-12 w-px shrink-0 self-center sm:mr-8"
@@ -78,6 +75,9 @@ function StatBlock({
         />
       )}
       <div className="flex flex-col items-center text-center">
+        <span className="text-2xl" aria-hidden>
+          {stat.icon}
+        </span>
         <span
           className="font-mono font-bold"
           style={{
@@ -91,19 +91,15 @@ function StatBlock({
         >
           {formatted}
         </span>
-        <span className="mt-1 text-sm text-text-muted">{label}</span>
+        <span className="mt-1 text-sm text-text-muted">{stat.label}</span>
       </div>
     </div>
   )
 }
 
 export function StatsSection() {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, amount: 0.2 })
-
   return (
     <section
-      ref={ref}
       className={cn(
         "w-full border-t border-b border-border",
         "py-16 sm:py-20"
@@ -119,16 +115,7 @@ export function StatsSection() {
       </h2>
       <div className="mx-auto flex max-w-6xl flex-wrap items-stretch justify-center px-4 sm:flex-nowrap sm:px-6">
         {STATS.map((stat, i) => (
-          <StatBlock
-            key={stat.label}
-            target={stat.value}
-            label={stat.label}
-            prefix={stat.prefix}
-            suffix={stat.suffix}
-            decimals={stat.decimals}
-            isInView={isInView}
-            showDivider={i > 0}
-          />
+          <StatBlock key={stat.label} stat={stat} showDivider={i > 0} />
         ))}
       </div>
     </section>
