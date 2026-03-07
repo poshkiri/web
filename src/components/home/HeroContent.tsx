@@ -86,7 +86,7 @@ export function HeroContent({ className }: { className?: string }) {
       {/* 2. Headline — 3 lines, Syne 900, 80–96px desktop */}
       <motion.h1
         variants={item}
-        className="font-syne mt-6 text-5xl font-black leading-[1.1] tracking-[-3px] sm:text-6xl md:text-7xl lg:text-[80px] xl:text-[96px]"
+        className="font-syne mt-6 text-5xl font-extrabold leading-[1.1] tracking-[-3px] sm:text-6xl md:text-7xl lg:text-[80px] xl:text-[96px]"
         style={{ letterSpacing: "-3px" }}
       >
         <span className="block text-[#f0eeff]">Build Games</span>

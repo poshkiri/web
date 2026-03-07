@@ -7,7 +7,7 @@ import { Footer } from "@/components/layout/footer"
 
 const syne = Syne({
   subsets: ["latin", "latin-ext"],
-  weight: ["700", "800", "900"],
+  weight: ["700", "800"],
   variable: "--font-syne",
 })
 
