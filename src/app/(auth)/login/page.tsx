@@ -64,6 +64,7 @@ export default function LoginPage() {
       title: "Вход выполнен",
     })
     router.push("/dashboard")
+    router.refresh()
   }
 
   async function handleGoogleSignIn() {
