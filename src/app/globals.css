@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "../styles/globals.css";
 @import "../styles/theme.css";
 
 @layer base {
@@ -51,7 +52,6 @@
     --accent-foreground: 213 31% 96%;
     --destructive: 0 63% 45%;
     --destructive-foreground: 210 40% 98%;
-    --border: 224 25% 18%;
     --input: 224 25% 18%;
     --ring: 262 83% 58%;
     --chart-1: 262 83% 58%;

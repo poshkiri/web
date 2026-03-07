@@ -1,0 +1,24 @@
+/**
+ * Game Assets Marketplace — Design system
+ * CSS custom properties (Stripe/Linear/Vercel-inspired dark UI).
+ */
+
+:root {
+  /* Backgrounds */
+  --bg-deep: #050508;
+  --bg-surface: #0d0d14;
+
+  /* Accent colors */
+  --purple: #7857ff;
+  --purple-glow: rgba(120, 87, 255, 0.4);
+  --cyan: #06d6ff;
+  --pink: #f72585;
+  --gold: #ffd60a;
+
+  /* Text */
+  --text-primary: #f0eeff;
+  --text-muted: #6b6880;
+
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.06);
+}

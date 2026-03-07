@@ -2,23 +2,24 @@
 
 import { useCallback, useEffect, useRef } from "react"
 
-const PARTICLE_COUNT = 80
-const PARTICLE_SPEED = 0.15
-const PARTICLE_RADIUS = 1.5
-const MOUSE_REPEL_RADIUS = 120
-const MOUSE_REPEL_STRENGTH = 0.08
+const PARTICLE_COUNT = 120
+const PARTICLE_SPEED = 0.12
+const PARTICLE_RADIUS = 1.2
+const MOUSE_REPEL_RADIUS = 140
+const MOUSE_REPEL_STRENGTH = 0.1
 
 interface Particle {
   x: number
   y: number
   vy: number
   radius: number
+  opacity: number
 }
 
 export function HeroBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const particlesRef = useRef<Particle[]>([])
-  const mouseRef = useRef({ x: 0, y: 0 })
+  const mouseRef = useRef({ x: -1e4, y: -1e4 })
   const rafRef = useRef<number>(0)
 
   const initParticles = useCallback((width: number, height: number) => {
@@ -27,6 +28,7 @@ export function HeroBackground() {
       y: Math.random() * height,
       vy: -PARTICLE_SPEED * (0.7 + Math.random() * 0.6),
       radius: PARTICLE_RADIUS * (0.6 + Math.random() * 0.8),
+      opacity: 0.3 + Math.random() * 0.3,
     }))
   }, [])
 
@@ -80,8 +82,8 @@ export function HeroBackground() {
         const dist = Math.hypot(dx, dy)
         if (dist < MOUSE_REPEL_RADIUS && dist > 0) {
           const force = (1 - dist / MOUSE_REPEL_RADIUS) * MOUSE_REPEL_STRENGTH
-          vx += (dx / dist) * force * 100
-          vy += (dy / dist) * force * 100
+          vx += (dx / dist) * force * 120
+          vy += (dy / dist) * force * 120
         }
 
         p.x += vx
@@ -94,7 +96,7 @@ export function HeroBackground() {
 
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
-        ctx.fillStyle = "rgba(255, 255, 255, 0.85)"
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`
         ctx.fill()
       }
 
@@ -115,47 +117,52 @@ export function HeroBackground() {
       className="absolute inset-0 z-0 overflow-hidden pointer-events-none"
       aria-hidden
     >
-      {/* Gradient orbs */}
-      <div className="absolute -left-[300px] top-1/2 -translate-y-1/2 w-[800px] h-[800px]">
-        <div
-          className="absolute inset-0 rounded-full opacity-70"
-          style={{
-            background: "var(--color-purple)",
-            filter: "blur(600px)",
-            animation: "hero-orb 18s ease-in-out infinite",
-          }}
-        />
-      </div>
-      <div className="absolute -right-[200px] top-1/2 -translate-y-1/2 w-[600px] h-[600px]">
-        <div
-          className="absolute inset-0 rounded-full opacity-70"
-          style={{
-            background: "var(--color-cyan)",
-            filter: "blur(400px)",
-            animation: "hero-orb 22s ease-in-out infinite 1s",
-          }}
-        />
-      </div>
-      <div className="absolute left-1/2 -translate-x-1/2 bottom-[-150px] w-[500px] h-[500px]">
-        <div
-          className="absolute inset-0 rounded-full opacity-60"
-          style={{
-            background: "var(--color-pink)",
-            filter: "blur(300px)",
-            animation: "hero-orb 20s ease-in-out infinite 0.5s",
-          }}
-        />
-      </div>
-
-      {/* Grid pattern */}
+      {/* Orb: Purple — top-left */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute w-[800px] h-[800px] min-w-[800px] min-h-[800px]"
+        style={{
+          top: -200,
+          left: -200,
+          background: "radial-gradient(circle, rgba(120,87,255,0.5), transparent 70%)",
+          filter: "blur(120px)",
+          animation: "drift1 18s ease-in-out infinite",
+        }}
+      />
+
+      {/* Orb: Cyan — top-right */}
+      <div
+        className="absolute w-[800px] h-[800px] min-w-[800px] min-h-[800px]"
+        style={{
+          top: 100,
+          right: -150,
+          background: "radial-gradient(circle, rgba(6,214,255,0.35), transparent 70%)",
+          filter: "blur(120px)",
+          animation: "drift2 22s ease-in-out infinite",
+        }}
+      />
+
+      {/* Orb: Pink — bottom center */}
+      <div
+        className="absolute w-[800px] h-[800px] min-w-[800px] min-h-[800px]"
+        style={{
+          bottom: -100,
+          left: "40%",
+          transform: "translateX(-50%)",
+          background: "radial-gradient(circle, rgba(247,37,133,0.3), transparent 70%)",
+          filter: "blur(120px)",
+          animation: "drift3 15s ease-in-out infinite",
+        }}
+      />
+
+      {/* Grid overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.025]"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)
+            linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)
           `,
-          backgroundSize: "48px 48px",
+          backgroundSize: "80px 80px",
         }}
       />
 

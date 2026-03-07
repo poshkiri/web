@@ -3,136 +3,203 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { GlowButton } from "@/components/ui/GlowButton"
 import { cn } from "@/lib/utils"
 
-const ROTATING_WORDS = ["Epic", "Premium", "Stunning"]
+const ROTATING_WORDS = [
+  "Epic 3D Models",
+  "Pro Sound Packs",
+  "Stunning VFX",
+  "Clean UI Kits",
+]
+const ROTATE_INTERVAL_MS = 2000
+const FADE_DURATION_MS = 200
 
+const STAGGER_DELAY = 0.1
 const container = {
   hidden: { opacity: 0 },
-  visible: (i: number) => ({
+  visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: i * 0.1 },
-  }),
+    transition: { staggerChildren: STAGGER_DELAY, delayChildren: 0 },
+  },
 }
 
 const item = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
 }
 
 export function HeroContent({ className }: { className?: string }) {
   const router = useRouter()
-  const [index, setIndex] = useState(0)
-  const [visible, setVisible] = useState(true)
+  const [wordIndex, setWordIndex] = useState(0)
+  const [wordVisible, setWordVisible] = useState(true)
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setVisible(false)
-      setTimeout(() => {
-        setIndex((i) => (i + 1) % ROTATING_WORDS.length)
-        setVisible(true)
-      }, 300)
-    }, 2000)
+      setWordVisible(false)
+      const changeWord = () => {
+        setWordIndex((i) => (i + 1) % ROTATING_WORDS.length)
+        setWordVisible(true)
+      }
+      setTimeout(changeWord, FADE_DURATION_MS)
+    }, ROTATE_INTERVAL_MS)
     return () => clearInterval(timer)
   }, [])
 
   return (
     <motion.div
       className={cn(
-        "relative z-10 mx-auto max-w-4xl px-4 pt-16 pb-24 text-center sm:pt-24 sm:pb-32",
+        "relative z-10 mx-auto max-w-4xl px-4 pt-16 pb-24 text-left sm:pt-24 sm:pb-32 lg:text-left",
         className
       )}
       variants={container}
       initial="hidden"
       animate="visible"
-      custom={0}
     >
-      {/* 1. Badge */}
+      {/* 1. Badge — pill, gradient border, pulsing dot */}
       <motion.div variants={item} className="flex justify-center lg:justify-start">
         <div
-          className={cn(
-            "relative inline-flex rounded-full p-[1px]",
-            "bg-gradient-to-r from-[var(--color-purple)] via-[var(--color-cyan)] to-[var(--color-purple)]"
-          )}
+          className="relative inline-flex rounded-full p-[1px]"
+          style={{
+            background: "linear-gradient(90deg, var(--purple), var(--cyan))",
+          }}
         >
           <span
             className={cn(
-              "rounded-full px-4 py-1.5 text-sm font-medium",
-              "bg-[var(--color-bg-card)] backdrop-blur-md",
-              "text-[var(--color-text)]"
+              "flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium",
+              "bg-bg-deep backdrop-blur-md text-text-primary"
             )}
           >
-            ✦ The #1 Marketplace for Game Creators
+            <span
+              className="relative h-2 w-2 shrink-0 rounded-full"
+              style={{ background: "var(--cyan)" }}
+            >
+              <span
+                className="absolute inset-0 animate-ping rounded-full opacity-75"
+                style={{ background: "var(--cyan)" }}
+              />
+            </span>
+            ✦ Trusted by 12,000+ Game Developers
           </span>
         </div>
       </motion.div>
 
-      {/* 2. Headline with typewriter word */}
+      {/* 2. Headline — 3 lines, Syne 900, 80–96px desktop */}
       <motion.h1
         variants={item}
-        className="mt-8 text-4xl font-bold tracking-tight text-[var(--color-text)] sm:text-5xl md:text-6xl"
+        className="font-syne mt-6 text-5xl font-black leading-[1.1] tracking-[-3px] sm:text-6xl md:text-7xl lg:text-[80px] xl:text-[96px]"
+        style={{ letterSpacing: "-3px" }}
       >
-        Fuel Your Game With{" "}
-        <span className="relative inline-block min-w-[140px] text-left sm:min-w-[180px]">
-          <span
-            className="absolute left-0 top-0 bg-gradient-to-r from-[var(--color-purple)] to-[var(--color-cyan)] bg-clip-text text-transparent transition-opacity duration-300"
-            style={{ opacity: visible ? 1 : 0 }}
-          >
-            {ROTATING_WORDS[index]}
-          </span>
-          {/* Invisible spacer so layout doesn't jump */}
-          <span className="invisible" aria-hidden>
-            {ROTATING_WORDS.reduce((a, b) => (a.length >= b.length ? a : b), "")}
-          </span>
+        <span className="block text-[#f0eeff]">Build Games</span>
+        <span
+          className="block bg-clip-text text-transparent"
+          style={{
+            background: "linear-gradient(90deg, var(--purple), var(--cyan))",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+          }}
+        >
+          With Assets
         </span>
-        {" "}Assets
+        <span
+          className="block text-transparent"
+          style={{
+            WebkitTextStroke: "2px #f0eeff",
+            color: "transparent",
+            paintOrder: "stroke fill",
+          }}
+        >
+          That Slap.
+        </span>
       </motion.h1>
 
-      {/* 3. Subtitle */}
+      {/* 3. Typewriter line */}
       <motion.p
         variants={item}
-        className="mx-auto mt-6 max-w-2xl text-lg text-[var(--color-text-muted)] sm:text-xl"
+        className="mt-6 text-lg text-text-muted sm:text-xl"
       >
-        3D models, textures, sound packs, and ready-to-use assets for Unity, Unreal, and Godot. Created by pros, for indie devs.
+        Currently featuring:{" "}
+        <span className="relative inline-block min-w-[200px] text-text-primary">
+          <span
+            className="transition-opacity duration-200"
+            style={{ opacity: wordVisible ? 1 : 0 }}
+          >
+            {ROTATING_WORDS[wordIndex]}
+          </span>
+          <span className="invisible" aria-hidden>
+            {ROTATING_WORDS.reduce((a, b) =>
+              a.length >= b.length ? a : b
+            )}
+          </span>
+        </span>
       </motion.p>
 
-      {/* 4. CTA buttons */}
+      {/* 4. Description — DM Sans, 17px, muted, max-width 440px */}
+      <motion.p
+        variants={item}
+        className="mt-6 max-w-[440px] text-[17px] leading-relaxed text-text-muted"
+      >
+        3D models, textures, sound packs, and ready-to-use assets for Unity,
+        Unreal, and Godot. Created by pros, for indie devs.
+      </motion.p>
+
+      {/* 5. CTA buttons */}
       <motion.div
         variants={item}
-        className="mt-10 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
+        className="mt-10 flex flex-wrap items-center gap-3"
       >
-        <GlowButton variant="primary" onClick={() => router.push("/assets")}>
-          Browse Assets
-        </GlowButton>
-        <GlowButton variant="ghost" onClick={() => router.push("/upload")}>
-          Sell Assets
-        </GlowButton>
+        <motion.button
+          type="button"
+          onClick={() => router.push("/assets")}
+          className="rounded-[14px] px-9 py-4 text-base font-semibold text-white transition-transform duration-200"
+          style={{
+            background: "linear-gradient(90deg, var(--purple), var(--cyan))",
+            boxShadow: "0 0 40px var(--purple-glow)",
+          }}
+          whileHover={{
+            y: -2,
+            boxShadow: "0 0 56px var(--purple-glow)",
+          }}
+          whileTap={{ scale: 0.98 }}
+        >
+          Explore Assets →
+        </motion.button>
+        <motion.button
+          type="button"
+          onClick={() => router.push("/upload")}
+          className="rounded-[14px] border px-9 py-4 text-base font-semibold text-text-primary backdrop-blur-[8px] transition-colors duration-200"
+          style={{
+            borderColor: "rgba(255,255,255,0.12)",
+            background: "rgba(255,255,255,0.04)",
+          }}
+          whileHover={{ backgroundColor: "rgba(255,255,255,0.08)" }}
+          whileTap={{ scale: 0.98 }}
+        >
+          Sell Your Work
+        </motion.button>
       </motion.div>
 
-      {/* 5. Social proof */}
+      {/* 6. Metrics — JetBrains Mono, vertical dividers */}
       <motion.div
         variants={item}
-        className="mt-14 flex items-center justify-center gap-3 lg:justify-start"
+        className="mt-14 flex flex-wrap items-center justify-center gap-0 lg:justify-start"
       >
-        <div className="flex -space-x-2">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div
-              key={i}
-              className={cn(
-                "h-9 w-9 rounded-full border-2 border-[var(--color-bg)]",
-                "bg-[var(--color-border)] flex items-center justify-center",
-                "text-xs font-medium text-[var(--color-text-muted)]"
-              )}
-              title={`Developer ${i}`}
-            >
-              {String.fromCodePoint(0x1f466 + (i % 3))}
-            </div>
-          ))}
-        </div>
-        <p className="text-sm text-[var(--color-text-muted)]">
-          <span className="font-semibold text-[var(--color-text)]">12,000+</span> developers already building
-        </p>
+        <span className="font-mono text-sm font-medium text-text-primary">
+          10K+ Assets
+        </span>
+        <span
+          className="mx-4 h-4 w-px shrink-0 self-center"
+          style={{ background: "rgba(255,255,255,0.15)" }}
+        />
+        <span className="font-mono text-sm font-medium text-text-primary">
+          500+ Sellers
+        </span>
+        <span
+          className="mx-4 h-4 w-px shrink-0 self-center"
+          style={{ background: "rgba(255,255,255,0.15)" }}
+        />
+        <span className="font-mono text-sm font-medium text-text-primary">
+          4.9★ Rating
+        </span>
       </motion.div>
     </motion.div>
   )

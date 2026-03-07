@@ -11,8 +11,8 @@ const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
     <div
       ref={ref}
       className={cn(
-        "rounded-lg border backdrop-blur-md",
-        "bg-[var(--color-bg-card)] border-[var(--color-border)]",
+        "rounded-[20px] border border-border backdrop-blur-[12px]",
+        "bg-[rgba(255,255,255,0.03)]",
         className
       )}
       {...props}

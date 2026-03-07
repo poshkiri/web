@@ -1,13 +1,25 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Syne, DM_Sans, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/toaster"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 
-const inter = Inter({
+const syne = Syne({
+  subsets: ["latin", "latin-ext"],
+  weight: ["700", "800", "900"],
+  variable: "--font-syne",
+})
+
+const dmSans = DM_Sans({
+  subsets: ["latin", "latin-ext"],
+  weight: ["300", "400", "500"],
+  variable: "--font-dm-sans",
+})
+
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-inter",
+  variable: "--font-mono",
 })
 
 export const metadata: Metadata = {
@@ -23,7 +35,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" className="dark">
-      <body className={`${inter.variable} font-sans antialiased min-h-screen flex flex-col bg-background text-foreground`}>
+      <body
+        className={`${syne.variable} ${dmSans.variable} ${jetbrainsMono.variable} font-sans antialiased min-h-screen flex flex-col bg-background text-foreground`}
+      >
         <Header />
         <main className="flex-1 pt-14">{children}</main>
         <Footer />

@@ -10,11 +10,26 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans: ["var(--font-dm-sans)", "system-ui", "sans-serif"],
+        syne: ["var(--font-syne)", "system-ui", "sans-serif"],
+        "dm-sans": ["var(--font-dm-sans)", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        /* Design system (Game Assets Marketplace) */
+        "bg-deep": "var(--bg-deep)",
+        "bg-surface": "var(--bg-surface)",
+        purple: "var(--purple)",
+        "purple-glow": "var(--purple-glow)",
+        cyan: "var(--cyan)",
+        pink: "var(--pink)",
+        gold: "var(--gold)",
+        "text-primary": "var(--text-primary)",
+        "text-muted": "var(--text-muted)",
+        border: "var(--border)",
+        /* shadcn */
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
@@ -43,7 +58,6 @@ const config: Config = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
-        border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         chart: {
