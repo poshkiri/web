@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
@@ -258,14 +259,7 @@ async function DashboardContent() {
   const user = await getCurrentUser();
 
   if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-4 py-12">
-        <p className="text-muted-foreground">You are not signed in.</p>
-        <Button asChild>
-          <Link href="/login">Sign in</Link>
-        </Button>
-      </div>
-    );
+    redirect("/login");
   }
 
   if (user.role === "buyer") {

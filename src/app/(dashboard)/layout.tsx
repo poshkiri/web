@@ -1,7 +1,14 @@
-export default function DashboardLayout({
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/supabase/server";
+
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect("/login");
+  }
+  return <>{children}</>;
 }

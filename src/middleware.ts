@@ -28,7 +28,8 @@ export async function middleware(request: NextRequest) {
   const { response, user, role } = await updateSession(request);
   const pathname = request.nextUrl.pathname;
 
-  if (matchesRoute(pathname, protectedRoutes) && !user) {
+  // Redirect to /login if unauthenticated — do not leave user on /dashboard (or /admin)
+  if (!user && matchesRoute(pathname, protectedRoutes)) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirectTo", pathname);
     return NextResponse.redirect(loginUrl);
